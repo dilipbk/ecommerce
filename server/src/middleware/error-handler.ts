@@ -1,10 +1,11 @@
-import type { Context } from "hono";
-import { AppError } from "../lib/errors";
+import type { ErrorHandler } from "hono";
+import type { StatusCode } from "hono/utils/http-status";
+import { AppError } from "../lib/errors.js";
 
-export function errorHandler(err: Error, c: Context) {
+export const errorHandler: ErrorHandler = (err, c) => {
   if (err instanceof AppError) {
-    return c.json({ error: { message: err.message, code: err.code } }, err.status as 400);
+    return c.json({ error: { message: err.message, code: err.code } }, err.status as any);
   }
   console.error(err);
   return c.json({ error: { message: "Internal server error", code: "INTERNAL" } }, 500);
-}
+};
