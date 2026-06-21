@@ -144,12 +144,12 @@ The complete endpoint list is documented in [`server/README.md`](server/README.m
 
 ## Frontend (client)
 
-The React frontend lives in [`client/`](client/) and uses **npm**:
+The React frontend lives in [`client/`](client/) (React + Vite + Tailwind, **pnpm**):
 
 ```bash
 cd client
-npm install
-npm run dev      # starts the Vite dev server
+pnpm install
+pnpm dev         # starts the Vite dev server
 ```
 
 ---
