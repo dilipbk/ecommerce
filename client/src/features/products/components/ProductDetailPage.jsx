@@ -41,7 +41,11 @@ export function ProductDetailPage() {
         {inStock ? `${product.stock} in stock` : "Out of stock"}
       </p>
       <div className="max-w-xs pt-2">
-        <AddToCartButton productId={product.id} disabled={!inStock} />
+        <AddToCartButton
+          productId={product.id}
+          productName={product.name}
+          disabled={!inStock}
+        />
       </div>
     </section>
   );

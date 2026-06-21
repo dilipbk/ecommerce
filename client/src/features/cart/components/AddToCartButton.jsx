@@ -1,19 +1,16 @@
-import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../app/providers/auth-context";
+import { useToast } from "../../../app/providers/toast-context";
 import { PATHS } from "../../../app/routes/paths";
 import { useCart } from "../hooks/useCart";
 import { useAddToCart } from "../hooks/useAddToCart";
 
-export function AddToCartButton({ productId, disabled }) {
+export function AddToCartButton({ productId, productName, disabled }) {
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
+  const toast = useToast();
   const { data: cart } = useCart();
   const { mutate, isPending } = useAddToCart();
-
-  const [justAdded, setJustAdded] = useState(false);
-  const timerRef = useRef(null);
-  useEffect(() => () => clearTimeout(timerRef.current), []);
 
   function handleClick() {
     if (!isAuthenticated) {
@@ -26,27 +23,20 @@ export function AddToCartButton({ productId, disabled }) {
     mutate(
       { productId, quantity: current + 1 },
       {
-        onSuccess: () => {
-          setJustAdded(true);
-          clearTimeout(timerRef.current);
-          timerRef.current = setTimeout(() => setJustAdded(false), 1500);
-        },
+        onSuccess: () => toast.success(`${productName ?? "Item"} added to cart`),
+        onError: (err) => toast.error(err.message),
       },
     );
   }
-
-  const label = isPending ? "Adding…" : justAdded ? "Added ✓" : "Add to cart";
 
   return (
     <button
       type="button"
       onClick={handleClick}
       disabled={disabled || isPending}
-      className={`w-full rounded-md px-3 py-2 text-sm font-medium text-white transition-colors disabled:opacity-50 ${
-        justAdded ? "bg-green-600" : "bg-gray-900 hover:bg-gray-700"
-      }`}
+      className="w-full rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-gray-700 disabled:opacity-50"
     >
-      {label}
+      {isPending ? "Adding…" : "Add to cart"}
     </button>
   );
 }

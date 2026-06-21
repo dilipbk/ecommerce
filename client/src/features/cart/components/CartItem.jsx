@@ -1,8 +1,10 @@
 import { formatPrice } from "../../../shared/lib/formatPrice";
+import { useToast } from "../../../app/providers/toast-context";
 import { useAddToCart } from "../hooks/useAddToCart";
 import { useRemoveFromCart } from "../hooks/useRemoveFromCart";
 
 export function CartItem({ item }) {
+  const toast = useToast();
   // addToCart sets the quantity, so we reuse it to step the count up/down.
   const setQuantity = useAddToCart();
   const remove = useRemoveFromCart();
@@ -17,7 +19,10 @@ export function CartItem({ item }) {
   }
 
   function increment() {
-    setQuantity.mutate({ productId: item.product_id, quantity: item.quantity + 1 });
+    setQuantity.mutate(
+      { productId: item.product_id, quantity: item.quantity + 1 },
+      { onError: (err) => toast.error(err.message) },
+    );
   }
 
   return (
@@ -65,10 +70,6 @@ export function CartItem({ item }) {
           </button>
         </div>
       </div>
-
-      {setQuantity.isError && (
-        <p className="mt-1 text-sm text-red-600">{setQuantity.error.message}</p>
-      )}
     </li>
   );
 }

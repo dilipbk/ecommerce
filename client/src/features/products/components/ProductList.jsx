@@ -27,7 +27,11 @@ export function ProductList({ categoryId }) {
           key={product.id}
           product={product}
           action={
-            <AddToCartButton productId={product.id} disabled={product.stock === 0} />
+            <AddToCartButton
+              productId={product.id}
+              productName={product.name}
+              disabled={product.stock === 0}
+            />
           }
         />
       ))}
