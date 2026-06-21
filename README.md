@@ -3,9 +3,9 @@
 A full-stack ecommerce example app for learners:
 
 - **`server/`** — REST API built with [Hono](https://hono.dev/), TypeScript, the built-in `node:sqlite` module (raw SQL, no ORM), and JWT auth.
-- **`client/`** — React + Vite frontend.
+- **`client/`** — React + Vite + Tailwind frontend (React Query, React Router).
 
-This guide walks through setting up and running the **backend server** step by step. For the full API reference and architecture notes, see [`server/README.md`](server/README.md).
+This guide walks through setting up and running **both the backend and the frontend** step by step. For the full API reference and backend architecture notes, see [`server/README.md`](server/README.md).
 
 ---
 
@@ -14,7 +14,7 @@ This guide walks through setting up and running the **backend server** step by s
 | Tool | Version | Notes |
 |------|---------|-------|
 | **Node.js** | **22 or newer** | Required for the built-in `node:sqlite` module |
-| **pnpm** | 8+ | Package manager for the server (`npm i -g pnpm`) |
+| **npm** | 9+ | Ships with Node.js — nothing extra to install |
 
 Check your Node version:
 
@@ -22,9 +22,11 @@ Check your Node version:
 node --version   # must be v22.x or higher
 ```
 
+The app has two parts that run side by side: the **API** on `http://localhost:8000` and the **web client** on `http://localhost:5173`. Set up the server first, then the client.
+
 ---
 
-## Server setup (step by step)
+## Part 1 — Server setup (step by step)
 
 All commands below are run from the **`server/`** directory.
 
@@ -37,7 +39,7 @@ cd server
 ### 2. Install dependencies
 
 ```bash
-pnpm install
+npm install
 ```
 
 > There is no native SQLite dependency to compile — the database uses Node's built-in `node:sqlite`.
@@ -59,7 +61,7 @@ cp .env.example .env
 ### 4. Create the database schema (run migrations)
 
 ```bash
-pnpm db:migrate
+npm run db:migrate
 ```
 
 This creates the SQLite tables: `users`, `categories`, `products`, `cart_items`, `orders`, `order_items`.
@@ -67,7 +69,7 @@ This creates the SQLite tables: `users`, `categories`, `products`, `cart_items`,
 ### 5. Seed demo data
 
 ```bash
-pnpm db:seed
+npm run db:seed
 ```
 
 This adds two demo users, sample categories, and products so you can log in and browse immediately.
@@ -79,10 +81,10 @@ This adds two demo users, sample categories, and products so you can log in and 
 | Customer | `customer@example.com` | `customer123` |
 | Admin | `admin@example.com` | `admin123` |
 
-### 6. Start the development server
+### 6. Start the API
 
 ```bash
-pnpm dev
+npm run dev
 ```
 
 The API is now running at **http://localhost:8000**. Verify it:
@@ -92,17 +94,67 @@ curl http://localhost:8000/api/health
 # {"status":"ok"}
 ```
 
-### 7. Run the tests (optional)
+Leave this running and open a **new terminal** for the client.
+
+---
+
+## Part 2 — Client setup (step by step)
+
+All commands below are run from the **`client/`** directory.
+
+### 1. Go into the client folder
 
 ```bash
-pnpm test
+cd client
 ```
+
+### 2. Install dependencies
+
+```bash
+npm install
+```
+
+### 3. (Optional) Point the client at the API
+
+The client defaults to `http://localhost:8000`. To override, copy the example env file and edit it:
+
+```bash
+cp .env.example .env
+```
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `VITE_API_URL` | `http://localhost:8000` | Base URL of the backend API |
+
+### 4. Start the web client
+
+```bash
+npm run dev
+```
+
+Open **http://localhost:5173**. With the API running (Part 1), you can browse products, filter by category, log in with the demo credentials, add to cart, and check out.
+
+---
+
+## Running the full app
+
+Use two terminals:
+
+```bash
+# terminal 1 — API
+cd server && npm run dev      # http://localhost:8000
+
+# terminal 2 — web client
+cd client && npm run dev      # http://localhost:5173
+```
+
+Then visit **http://localhost:5173** and log in as `customer@example.com` / `customer123`.
 
 ---
 
 ## Quick API smoke test
 
-With the server running (`pnpm dev`), try the full flow:
+With the server running, you can exercise the full flow from the command line:
 
 ```bash
 # List products (public)
@@ -129,32 +181,32 @@ The complete endpoint list is documented in [`server/README.md`](server/README.m
 
 ---
 
-## Server scripts reference
+## Scripts reference
+
+### Server (`server/`)
 
 | Command | Description |
 |---------|-------------|
-| `pnpm dev` | Start the dev server with hot reload |
-| `pnpm build` | Compile TypeScript to `dist/` (copies SQL migrations too) |
-| `pnpm start` | Run the compiled server from `dist/` |
-| `pnpm db:migrate` | Apply database migrations |
-| `pnpm db:seed` | Reset and seed demo data |
-| `pnpm test` | Run the test suite (Vitest) |
+| `npm run dev` | Start the API with hot reload |
+| `npm run build` | Compile TypeScript to `dist/` (copies SQL migrations too) |
+| `npm start` | Run the compiled API from `dist/` |
+| `npm run db:migrate` | Apply database migrations |
+| `npm run db:seed` | Reset and seed demo data |
+| `npm test` | Run the test suite (Vitest) |
 
----
+### Client (`client/`)
 
-## Frontend (client)
-
-The React frontend lives in [`client/`](client/) (React + Vite + Tailwind, **pnpm**):
-
-```bash
-cd client
-pnpm install
-pnpm dev         # starts the Vite dev server
-```
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start the Vite dev server |
+| `npm run build` | Build the production bundle to `dist/` |
+| `npm run preview` | Preview the production build locally |
+| `npm run lint` | Lint the source |
 
 ---
 
 ## Notes
 
 - **Node 22+ required.** The backend uses Node's built-in `node:sqlite`, which is still marked experimental, so the run scripts pass `--disable-warning=ExperimentalWarning` to keep output clean.
-- The SQLite database file (`ecommerce.db`) is git-ignored — it is created locally by `pnpm db:migrate`.
+- The SQLite database file (`ecommerce.db`) is git-ignored — it is created locally by `npm run db:migrate`.
+- The client expects the API to be running; start the server before (or alongside) the client.
