@@ -1,8 +1,16 @@
 import { transaction, type Db } from "../../db/connection.js";
 import { BadRequestError, NotFoundError } from "../../lib/errors.js";
 import { cartRepository } from "../cart/cart.repository.js";
-import { ordersRepository, type OrderRow } from "./orders.repository.js";
+import {
+  ordersRepository,
+  type OrderItemRow,
+  type OrderRow,
+} from "./orders.repository.js";
 import { productsService } from "../products/products.service.js";
+
+export interface OrderWithItems extends OrderRow {
+  items: OrderItemRow[];
+}
 
 export function ordersService(db: Db) {
   const orders = ordersRepository(db);
@@ -41,6 +49,12 @@ export function ordersService(db: Db) {
     },
     listForUser(userId: number): OrderRow[] {
       return orders.findByUser(userId);
+    },
+    getById(userId: number, orderId: number): OrderWithItems {
+      const order = orders.findById(orderId);
+      // Treat another user's order as not found — don't leak its existence.
+      if (!order || order.user_id !== userId) throw new NotFoundError("Order");
+      return { ...order, items: orders.itemsForOrder(orderId) };
     },
   };
 }

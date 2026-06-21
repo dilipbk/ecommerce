@@ -10,3 +10,6 @@ ordersRoutes.use("*", authMiddleware);
 
 ordersRoutes.post("/checkout", (c) => c.json(service.checkout(c.get("user").id), 201));
 ordersRoutes.get("/", (c) => c.json(service.listForUser(c.get("user").id)));
+ordersRoutes.get("/:id", (c) =>
+  c.json(service.getById(c.get("user").id, Number(c.req.param("id")))),
+);

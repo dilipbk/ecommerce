@@ -14,6 +14,7 @@ export interface OrderItemRow {
   product_id: number;
   quantity: number;
   unit_price_cents: number;
+  name: string;
 }
 
 export interface OrderLine {
@@ -48,7 +49,11 @@ export function ordersRepository(db: Db) {
     },
     itemsForOrder(orderId: number): OrderItemRow[] {
       return db
-        .prepare("SELECT * FROM order_items WHERE order_id = ?")
+        .prepare(
+          `SELECT oi.id, oi.order_id, oi.product_id, oi.quantity, oi.unit_price_cents, p.name
+           FROM order_items oi JOIN products p ON p.id = oi.product_id
+           WHERE oi.order_id = ?`,
+        )
         .all(orderId) as unknown as OrderItemRow[];
     },
   };

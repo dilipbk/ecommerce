@@ -37,3 +37,34 @@ describe("ordersService.checkout", () => {
     expect(() => ordersService(db).checkout(1)).toThrow();
   });
 });
+
+describe("ordersService.getById", () => {
+  it("returns the order with its line items (incl. product name)", () => {
+    const db = makeTestDb();
+    seed(db);
+    cartService(db).addItem(1, 1, 2);
+    const created = ordersService(db).checkout(1);
+
+    const detail = ordersService(db).getById(1, created.id);
+    expect(detail.id).toBe(created.id);
+    expect(detail.total_cents).toBe(500);
+    expect(detail.items).toHaveLength(1);
+    expect(detail.items[0]).toMatchObject({
+      product_id: 1,
+      quantity: 2,
+      unit_price_cents: 250,
+      name: "P",
+    });
+  });
+
+  it("throws for another user's order (no cross-user access)", () => {
+    const db = makeTestDb();
+    seed(db);
+    db.prepare("INSERT INTO users (email, password_hash, name) VALUES ('b@e.com','x:y','B')").run();
+    cartService(db).addItem(1, 1, 1);
+    const created = ordersService(db).checkout(1);
+
+    // user 2 must not be able to read user 1's order
+    expect(() => ordersService(db).getById(2, created.id)).toThrow();
+  });
+});
