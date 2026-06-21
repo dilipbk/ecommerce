@@ -1,6 +1,7 @@
 import { useCart } from "../hooks/useCart";
 import { CartItem } from "./CartItem";
 import { formatPrice } from "../../../shared/lib/formatPrice";
+import { RowsSkeleton } from "../../../shared/components/RowsSkeleton";
 // Composition seam: the cart page hosts the orders feature's checkout action.
 import { CheckoutButton } from "../../orders/components/CheckoutButton";
 
@@ -8,7 +9,12 @@ export function CartPage() {
   const { data: cart, isPending, isError, error } = useCart();
 
   if (isPending) {
-    return <p className="text-gray-500">Loading cart…</p>;
+    return (
+      <section className="max-w-2xl">
+        <h1 className="mb-6 text-3xl font-semibold tracking-tight">Your cart</h1>
+        <RowsSkeleton />
+      </section>
+    );
   }
 
   if (isError) {

@@ -1,6 +1,7 @@
 import { Link, useParams } from "react-router-dom";
 import { useProduct } from "../hooks/useProduct";
 import { formatPrice } from "../../../shared/lib/formatPrice";
+import { Skeleton } from "../../../shared/components/Skeleton";
 import { AddToCartButton } from "../../cart/components/AddToCartButton";
 import { PATHS } from "../../../app/routes/paths";
 
@@ -15,7 +16,15 @@ export function ProductDetailPage() {
   );
 
   if (isPending) {
-    return <p className="text-gray-500">Loading…</p>;
+    return (
+      <section className="max-w-2xl space-y-4">
+        <Skeleton className="h-8 w-1/2" />
+        <Skeleton className="h-4 w-full" />
+        <Skeleton className="h-4 w-3/4" />
+        <Skeleton className="h-7 w-24" />
+        <Skeleton className="h-9 w-40" />
+      </section>
+    );
   }
 
   if (isError) {

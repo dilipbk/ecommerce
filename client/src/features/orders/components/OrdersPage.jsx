@@ -1,13 +1,19 @@
 import { Link } from "react-router-dom";
 import { useOrders } from "../hooks/useOrders";
 import { formatPrice } from "../../../shared/lib/formatPrice";
+import { RowsSkeleton } from "../../../shared/components/RowsSkeleton";
 import { PATHS } from "../../../app/routes/paths";
 
 export function OrdersPage() {
   const { data: orders, isPending, isError, error } = useOrders();
 
   if (isPending) {
-    return <p className="text-gray-500">Loading orders…</p>;
+    return (
+      <section className="max-w-2xl">
+        <h1 className="mb-6 text-3xl font-semibold tracking-tight">Your orders</h1>
+        <RowsSkeleton />
+      </section>
+    );
   }
 
   if (isError) {

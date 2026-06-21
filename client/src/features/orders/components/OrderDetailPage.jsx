@@ -1,6 +1,8 @@
 import { Link, useParams } from "react-router-dom";
 import { useOrder } from "../hooks/useOrder";
 import { formatPrice } from "../../../shared/lib/formatPrice";
+import { Skeleton } from "../../../shared/components/Skeleton";
+import { RowsSkeleton } from "../../../shared/components/RowsSkeleton";
 import { PATHS } from "../../../app/routes/paths";
 
 export function OrderDetailPage() {
@@ -14,7 +16,13 @@ export function OrderDetailPage() {
   );
 
   if (isPending) {
-    return <p className="text-gray-500">Loading order…</p>;
+    return (
+      <section className="max-w-2xl space-y-4">
+        {backLink}
+        <Skeleton className="h-8 w-40" />
+        <RowsSkeleton />
+      </section>
+    );
   }
 
   if (isError) {
