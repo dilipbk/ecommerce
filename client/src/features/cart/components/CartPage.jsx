@@ -1,6 +1,8 @@
 import { useCart } from "../hooks/useCart";
 import { CartItem } from "./CartItem";
 import { formatPrice } from "../../../shared/lib/formatPrice";
+// Composition seam: the cart page hosts the orders feature's checkout action.
+import { CheckoutButton } from "../../orders/components/CheckoutButton";
 
 export function CartPage() {
   const { data: cart, isPending, isError, error } = useCart();
@@ -35,6 +37,9 @@ export function CartPage() {
         <span className="text-lg font-semibold text-gray-900">
           {formatPrice(cart.totalCents)}
         </span>
+      </div>
+      <div className="mt-6">
+        <CheckoutButton />
       </div>
     </section>
   );

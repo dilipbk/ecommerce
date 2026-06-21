@@ -5,16 +5,13 @@ import { ProductsPage } from "../../features/products/components/ProductsPage";
 import { ProductDetailPage } from "../../features/products/components/ProductDetailPage";
 import { LoginPage } from "../../features/auth/components/LoginPage";
 import { CartPage } from "../../features/cart/components/CartPage";
+import { OrdersPage } from "../../features/orders/components/OrdersPage";
 
-/**
- * Temporary placeholder page. Real pages will come from the feature modules
- * under src/features/* (orders).
- */
-function Placeholder({ title, subtitle }) {
+function NotFound() {
   return (
     <section>
-      <h1 className="text-3xl font-semibold tracking-tight">{title}</h1>
-      <p className="mt-2 text-gray-500">{subtitle}</p>
+      <h1 className="text-3xl font-semibold tracking-tight">404</h1>
+      <p className="mt-2 text-gray-500">This page does not exist.</p>
     </section>
   );
 }
@@ -29,12 +26,12 @@ const router = createBrowserRouter([
       // Routes that require authentication.
       {
         element: <ProtectedRoute />,
-        children: [{ path: "cart", element: <CartPage /> }],
+        children: [
+          { path: "cart", element: <CartPage /> },
+          { path: "orders", element: <OrdersPage /> },
+        ],
       },
-      {
-        path: "*",
-        element: <Placeholder title="404" subtitle="This page does not exist." />,
-      },
+      { path: "*", element: <NotFound /> },
     ],
   },
 ]);
