@@ -1,8 +1,8 @@
-import type { Database } from "better-sqlite3";
+import type { Db } from "../../db/connection.js";
 import { NotFoundError } from "../../lib/errors.js";
 import { productsRepository, type ProductRow } from "./products.repository.js";
 
-export function productsService(db: Database) {
+export function productsService(db: Db) {
   const repo = productsRepository(db);
   return {
     list(filter?: { categoryId?: number }): ProductRow[] {

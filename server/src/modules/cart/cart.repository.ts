@@ -1,4 +1,4 @@
-import type { Database } from "better-sqlite3";
+import type { Db } from "../../db/connection.js";
 
 export interface CartItemRow {
   id: number;
@@ -9,7 +9,7 @@ export interface CartItemRow {
   price_cents: number;
 }
 
-export function cartRepository(db: Database) {
+export function cartRepository(db: Db) {
   return {
     itemsForUser(userId: number): CartItemRow[] {
       return db
@@ -18,7 +18,7 @@ export function cartRepository(db: Database) {
            FROM cart_items ci JOIN products p ON p.id = ci.product_id
            WHERE ci.user_id = ? ORDER BY ci.id`,
         )
-        .all(userId) as CartItemRow[];
+        .all(userId) as unknown as CartItemRow[];
     },
     upsert(userId: number, productId: number, quantity: number): void {
       db.prepare(

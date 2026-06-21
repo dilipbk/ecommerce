@@ -1,8 +1,8 @@
 # Backend
 
-Hono-based REST API for the ecommerce platform, built with TypeScript, better-sqlite3, and Zod validation.
+Hono-based REST API for the ecommerce platform, built with TypeScript, the built-in `node:sqlite` module (raw SQL, no ORM), and Zod validation.
 
-See the full design spec at [`docs/superpowers/specs/2026-06-21-hono-ecommerce-backend-structure-design.md`](../docs/superpowers/specs/2026-06-21-hono-ecommerce-backend-structure-design.md).
+> Requires Node.js 22+ for the built-in `node:sqlite` module. It is still marked experimental, so the run scripts pass `--disable-warning=ExperimentalWarning` to keep output clean.
 
 ## Getting Started
 
@@ -98,7 +98,7 @@ server/
     config/
       env.ts            # Environment variable validation (Zod)
     db/
-      connection.ts     # SQLite connection (better-sqlite3)
+      connection.ts     # SQLite connection (node:sqlite) + transaction helper
       migrate.ts        # Migration runner
       seed.ts           # Demo data seeder
       migrations/       # SQL migration files (001_users.sql, ...)

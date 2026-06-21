@@ -1,4 +1,4 @@
-import type { Database } from "better-sqlite3";
+import type { Db } from "../../db/connection.js";
 
 export interface UserRow {
   id: number;
@@ -9,7 +9,7 @@ export interface UserRow {
   created_at: string;
 }
 
-export function usersRepository(db: Database) {
+export function usersRepository(db: Db) {
   return {
     findByEmail(email: string): UserRow | undefined {
       return db.prepare("SELECT * FROM users WHERE email = ?").get(email) as UserRow | undefined;

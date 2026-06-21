@@ -1,11 +1,11 @@
-import type { Database } from "better-sqlite3";
+import type { Db } from "../../db/connection.js";
 import { UnauthorizedError } from "../../lib/errors.js";
 import { verifyPassword } from "../../lib/password.js";
 import { signToken } from "../../lib/jwt.js";
 import { usersRepository } from "../users/users.repository.js";
 import type { PublicUser } from "../users/users.service.js";
 
-export function authService(db: Database) {
+export function authService(db: Db) {
   const users = usersRepository(db);
   return {
     async login(email: string, password: string): Promise<{ token: string; user: PublicUser }> {

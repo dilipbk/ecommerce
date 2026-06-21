@@ -1,4 +1,4 @@
-import type { Database } from "better-sqlite3";
+import type { Db } from "../../db/connection.js";
 import { BadRequestError } from "../../lib/errors.js";
 import { cartRepository, type CartItemRow } from "./cart.repository.js";
 import { productsService } from "../products/products.service.js";
@@ -8,7 +8,7 @@ export interface CartView {
   totalCents: number;
 }
 
-export function cartService(db: Database) {
+export function cartService(db: Db) {
   const repo = cartRepository(db);
   const products = productsService(db);
 

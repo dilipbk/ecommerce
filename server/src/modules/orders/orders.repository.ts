@@ -1,4 +1,4 @@
-import type { Database } from "better-sqlite3";
+import type { Db } from "../../db/connection.js";
 
 export interface OrderRow {
   id: number;
@@ -22,7 +22,7 @@ export interface OrderLine {
   unitPriceCents: number;
 }
 
-export function ordersRepository(db: Database) {
+export function ordersRepository(db: Db) {
   return {
     create(userId: number, totalCents: number, lines: OrderLine[]): number {
       const info = db
@@ -44,12 +44,12 @@ export function ordersRepository(db: Database) {
     findByUser(userId: number): OrderRow[] {
       return db
         .prepare("SELECT * FROM orders WHERE user_id = ? ORDER BY id DESC")
-        .all(userId) as OrderRow[];
+        .all(userId) as unknown as OrderRow[];
     },
     itemsForOrder(orderId: number): OrderItemRow[] {
       return db
         .prepare("SELECT * FROM order_items WHERE order_id = ?")
-        .all(orderId) as OrderItemRow[];
+        .all(orderId) as unknown as OrderItemRow[];
     },
   };
 }

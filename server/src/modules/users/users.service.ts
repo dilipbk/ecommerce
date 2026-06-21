@@ -1,4 +1,4 @@
-import type { Database } from "better-sqlite3";
+import type { Db } from "../../db/connection.js";
 import { NotFoundError } from "../../lib/errors.js";
 import { usersRepository } from "./users.repository.js";
 
@@ -9,7 +9,7 @@ export interface PublicUser {
   role: string;
 }
 
-export function usersService(db: Database) {
+export function usersService(db: Db) {
   const repo = usersRepository(db);
   return {
     getById(id: number): PublicUser {

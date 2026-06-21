@@ -1,13 +1,13 @@
 // Demo credentials (plaintext for learners):
 //   admin@example.com    / admin123   (role: admin)
 //   customer@example.com / customer123 (role: customer)
-import { db } from "./connection.js";
+import { db, transaction } from "./connection.js";
 import { runMigrations } from "./migrate.js";
 import { hashPassword } from "../lib/password.js";
 
 runMigrations(db);
 
-const seed = db.transaction(() => {
+transaction(db, () => {
   db.exec("DELETE FROM order_items; DELETE FROM orders; DELETE FROM cart_items; DELETE FROM products; DELETE FROM categories; DELETE FROM users;");
 
   const insertUser = db.prepare(
@@ -29,5 +29,4 @@ const seed = db.transaction(() => {
   insertProduct.run("The Pragmatic Programmer", "Your journey to mastery", 3999, 80, booksId);
 });
 
-seed();
 console.log("Seed complete. Login with customer@example.com / customer123");

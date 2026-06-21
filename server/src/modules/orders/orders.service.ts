@@ -1,10 +1,10 @@
-import type { Database } from "better-sqlite3";
+import { transaction, type Db } from "../../db/connection.js";
 import { BadRequestError, NotFoundError } from "../../lib/errors.js";
 import { cartRepository } from "../cart/cart.repository.js";
 import { ordersRepository, type OrderRow } from "./orders.repository.js";
 import { productsService } from "../products/products.service.js";
 
-export function ordersService(db: Database) {
+export function ordersService(db: Db) {
   const orders = ordersRepository(db);
   const cart = cartRepository(db);
   const products = productsService(db);
@@ -14,7 +14,7 @@ export function ordersService(db: Database) {
       const items = cart.itemsForUser(userId);
       if (items.length === 0) throw new BadRequestError("Cart is empty");
 
-      const tx = db.transaction(() => {
+      return transaction(db, () => {
         // Check stock sufficiency for all items before any mutations
         for (const item of items) {
           const product = products.getById(item.product_id);
@@ -38,8 +38,6 @@ export function ordersService(db: Database) {
         if (!created) throw new NotFoundError("Order");
         return created;
       });
-
-      return tx();
     },
     listForUser(userId: number): OrderRow[] {
       return orders.findByUser(userId);

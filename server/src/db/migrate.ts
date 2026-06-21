@@ -1,12 +1,11 @@
 import { readFileSync, readdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import type { Database } from "better-sqlite3";
-import { db as defaultDb } from "./connection.js";
+import { db as defaultDb, transaction, type Db } from "./connection.js";
 
 const migrationsDir = join(dirname(fileURLToPath(import.meta.url)), "migrations");
 
-export function runMigrations(database: Database): void {
+export function runMigrations(database: Db): void {
   database.exec(
     "CREATE TABLE IF NOT EXISTS _migrations (name TEXT PRIMARY KEY, applied_at TEXT NOT NULL DEFAULT (datetime('now')))",
   );
@@ -19,11 +18,10 @@ export function runMigrations(database: Database): void {
   for (const file of files) {
     if (applied.has(file)) continue;
     const sql = readFileSync(join(migrationsDir, file), "utf8");
-    const tx = database.transaction(() => {
+    transaction(database, () => {
       database.exec(sql);
       record.run(file);
     });
-    tx();
     console.log(`Applied migration: ${file}`);
   }
 }

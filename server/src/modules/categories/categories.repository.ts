@@ -1,4 +1,4 @@
-import type { Database } from "better-sqlite3";
+import type { Db } from "../../db/connection.js";
 
 export interface CategoryRow {
   id: number;
@@ -6,10 +6,10 @@ export interface CategoryRow {
   slug: string;
 }
 
-export function categoriesRepository(db: Database) {
+export function categoriesRepository(db: Db) {
   return {
     all(): CategoryRow[] {
-      return db.prepare("SELECT * FROM categories ORDER BY name").all() as CategoryRow[];
+      return db.prepare("SELECT * FROM categories ORDER BY name").all() as unknown as CategoryRow[];
     },
     findById(id: number): CategoryRow | undefined {
       return db.prepare("SELECT * FROM categories WHERE id = ?").get(id) as CategoryRow | undefined;
