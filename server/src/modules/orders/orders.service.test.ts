@@ -27,4 +27,13 @@ describe("ordersService.checkout", () => {
     seed(db);
     expect(() => ordersService(db).checkout(1)).toThrow();
   });
+
+  it("throws when an item exceeds available stock", () => {
+    const db = makeTestDb();
+    db.prepare("INSERT INTO users (email, password_hash, name) VALUES ('u@e.com','x:y','U')").run();
+    db.prepare("INSERT INTO products (name, description, price_cents, stock) VALUES ('P','',250,1)").run();
+    // bypass cartService stock guard by inserting the cart row directly
+    db.prepare("INSERT INTO cart_items (user_id, product_id, quantity) VALUES (1, 1, 5)").run();
+    expect(() => ordersService(db).checkout(1)).toThrow();
+  });
 });
