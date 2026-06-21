@@ -33,19 +33,21 @@ export function OrdersPage() {
       <h1 className="mb-6 text-3xl font-semibold tracking-tight">Your orders</h1>
       <ul>
         {orders.map((order) => (
-          <li
-            key={order.id}
-            className="flex items-center justify-between border-b border-gray-200 py-3"
-          >
-            <div>
-              <p className="font-medium text-gray-900">Order #{order.id}</p>
-              <p className="text-sm text-gray-500">
-                {order.created_at} · {order.status}
-              </p>
-            </div>
-            <span className="font-semibold text-gray-900">
-              {formatPrice(order.total_cents)}
-            </span>
+          <li key={order.id} className="border-b border-gray-200">
+            <Link
+              to={PATHS.orderDetail(order.id)}
+              className="flex items-center justify-between py-3 transition-colors hover:bg-gray-50"
+            >
+              <div>
+                <p className="font-medium text-gray-900">Order #{order.id}</p>
+                <p className="text-sm text-gray-500">
+                  {order.created_at} · {order.status}
+                </p>
+              </div>
+              <span className="font-semibold text-gray-900">
+                {formatPrice(order.total_cents)}
+              </span>
+            </Link>
           </li>
         ))}
       </ul>

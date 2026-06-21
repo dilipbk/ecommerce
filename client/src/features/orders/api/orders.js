@@ -5,3 +5,6 @@ export const checkout = () => api.post("/api/orders/checkout");
 
 /** GET /api/orders — the current user's orders, newest first. */
 export const getOrders = () => api.get("/api/orders");
+
+/** GET /api/orders/:id — a single order with its line items. */
+export const getOrder = (id) => api.get(`/api/orders/${id}`);

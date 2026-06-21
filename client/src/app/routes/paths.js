@@ -5,4 +5,5 @@ export const PATHS = {
   login: "/login",
   cart: "/cart",
   orders: "/orders",
+  orderDetail: (id) => `/orders/${id}`,
 };

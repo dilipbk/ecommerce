@@ -6,6 +6,7 @@ import { ProductDetailPage } from "../../features/products/components/ProductDet
 import { LoginPage } from "../../features/auth/components/LoginPage";
 import { CartPage } from "../../features/cart/components/CartPage";
 import { OrdersPage } from "../../features/orders/components/OrdersPage";
+import { OrderDetailPage } from "../../features/orders/components/OrderDetailPage";
 
 function NotFound() {
   return (
@@ -29,6 +30,7 @@ const router = createBrowserRouter([
         children: [
           { path: "cart", element: <CartPage /> },
           { path: "orders", element: <OrdersPage /> },
+          { path: "orders/:id", element: <OrderDetailPage /> },
         ],
       },
       { path: "*", element: <NotFound /> },
