@@ -3,10 +3,11 @@ import { RootLayout } from "../layout/RootLayout";
 import { ProtectedRoute } from "./ProtectedRoute";
 import { ProductsPage } from "../../features/products/components/ProductsPage";
 import { LoginPage } from "../../features/auth/components/LoginPage";
+import { CartPage } from "../../features/cart/components/CartPage";
 
 /**
  * Temporary placeholder page. Real pages will come from the feature modules
- * under src/features/* (cart, orders).
+ * under src/features/* (orders).
  */
 function Placeholder({ title, subtitle }) {
   return (
@@ -26,12 +27,7 @@ const router = createBrowserRouter([
       // Routes that require authentication.
       {
         element: <ProtectedRoute />,
-        children: [
-          {
-            path: "cart",
-            element: <Placeholder title="Your cart" subtitle="Cart coming soon." />,
-          },
-        ],
+        children: [{ path: "cart", element: <CartPage /> }],
       },
       {
         path: "*",

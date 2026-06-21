@@ -1,5 +1,7 @@
 import { useProducts } from "../hooks/useProducts";
 import { ProductCard } from "./ProductCard";
+// Composition point: the products list injects the cart's add-to-cart action.
+import { AddToCartButton } from "../../cart/components/AddToCartButton";
 
 export function ProductList() {
   const { data: products, isPending, isError, error } = useProducts();
@@ -21,7 +23,13 @@ export function ProductList() {
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {products.map((product) => (
-        <ProductCard key={product.id} product={product} />
+        <ProductCard
+          key={product.id}
+          product={product}
+          action={
+            <AddToCartButton productId={product.id} disabled={product.stock === 0} />
+          }
+        />
       ))}
     </div>
   );

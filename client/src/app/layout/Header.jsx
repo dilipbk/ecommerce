@@ -1,11 +1,7 @@
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../providers/auth-context";
+import { useCart } from "../../features/cart/hooks/useCart";
 import { PATHS } from "../routes/paths";
-
-const navItems = [
-  { to: PATHS.products, label: "Products", end: true },
-  { to: PATHS.cart, label: "Cart" },
-];
 
 const linkClass = ({ isActive }) =>
   isActive
@@ -14,7 +10,10 @@ const linkClass = ({ isActive }) =>
 
 export function Header() {
   const { isAuthenticated, user, logout } = useAuth();
+  const { data: cart } = useCart();
   const navigate = useNavigate();
+
+  const itemCount = cart?.items.reduce((sum, item) => sum + item.quantity, 0) ?? 0;
 
   function handleLogout() {
     logout();
@@ -28,11 +27,18 @@ export function Header() {
           Ecommerce
         </Link>
         <nav className="flex items-center gap-6 text-sm">
-          {navItems.map((item) => (
-            <NavLink key={item.to} to={item.to} end={item.end} className={linkClass}>
-              {item.label}
-            </NavLink>
-          ))}
+          <NavLink to={PATHS.products} end className={linkClass}>
+            Products
+          </NavLink>
+
+          <NavLink to={PATHS.cart} className={linkClass}>
+            Cart
+            {itemCount > 0 && (
+              <span className="ml-1.5 rounded-full bg-gray-900 px-2 py-0.5 text-xs font-medium text-white">
+                {itemCount}
+              </span>
+            )}
+          </NavLink>
 
           {isAuthenticated ? (
             <div className="flex items-center gap-4">
