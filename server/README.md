@@ -59,53 +59,34 @@ Compiles TypeScript and copies SQL migration files into `dist/`.
 
 ## API Endpoints
 
-All endpoints are mounted under `/api`.
+All endpoints are mounted under `/api`. "Bearer" means the request must include an `Authorization: Bearer <token>` header with a JWT obtained from the login endpoint.
 
-### Auth
+> **Note on admin access:** A seeded `admin` user exists (see Demo Credentials below) but no admin-only management endpoints are implemented in this scaffold. Both roles have identical API access.
 
-| Method | Path               | Auth | Description           |
-|--------|--------------------|------|-----------------------|
-| POST   | /api/auth/login    | No   | Login, returns JWT    |
+| Method | Path                        | Auth   | Description                                                         |
+|--------|-----------------------------|--------|---------------------------------------------------------------------|
+| GET    | /api/health                 | public | Health check — returns `{ "status": "ok" }`                        |
+| POST   | /api/auth/login             | public | Log in with email + password — returns `{ token, user }`           |
+| GET    | /api/users/me               | Bearer | Current user profile                                                |
+| GET    | /api/categories             | public | List all categories                                                 |
+| GET    | /api/products               | public | List products; optional `?categoryId=<id>` filter                  |
+| GET    | /api/products/:id           | public | Get one product by id                                               |
+| GET    | /api/cart                   | Bearer | Get current user's cart with `totalCents`                           |
+| POST   | /api/cart/items             | Bearer | Add/replace a cart item — body `{ productId, quantity }`           |
+| DELETE | /api/cart/items/:productId  | Bearer | Remove a product from the cart (keyed by **productId**, not item id)|
+| POST   | /api/orders/checkout        | Bearer | Check out the cart — creates an order (HTTP 201)                    |
+| GET    | /api/orders                 | Bearer | List the current user's orders                                      |
 
-### Users
+## Extending this app (not yet implemented)
 
-| Method | Path               | Auth     | Description           |
-|--------|--------------------|----------|-----------------------|
-| GET    | /api/users/me      | Required | Get current user info |
+The routes above are the complete scaffold. The following are suggested exercises — they are **not built**:
 
-### Categories
-
-| Method | Path                    | Auth  | Description           |
-|--------|-------------------------|-------|-----------------------|
-| GET    | /api/categories         | No    | List all categories   |
-| POST   | /api/categories         | Admin | Create category       |
-| DELETE | /api/categories/:id     | Admin | Delete category       |
-
-### Products
-
-| Method | Path                    | Auth  | Description           |
-|--------|-------------------------|-------|-----------------------|
-| GET    | /api/products           | No    | List all products     |
-| GET    | /api/products/:id       | No    | Get single product    |
-| POST   | /api/products           | Admin | Create product        |
-| PUT    | /api/products/:id       | Admin | Update product        |
-| DELETE | /api/products/:id       | Admin | Delete product        |
-
-### Cart
-
-| Method | Path                    | Auth     | Description           |
-|--------|-------------------------|----------|-----------------------|
-| GET    | /api/cart               | Required | View cart             |
-| POST   | /api/cart/items         | Required | Add item to cart      |
-| DELETE | /api/cart/items/:id     | Required | Remove item from cart |
-
-### Orders
-
-| Method | Path                    | Auth     | Description           |
-|--------|-------------------------|----------|-----------------------|
-| GET    | /api/orders             | Required | List my orders        |
-| GET    | /api/orders/:id         | Required | Get order by ID       |
-| POST   | /api/orders/checkout    | Required | Checkout (cart→order) |
+- `POST /api/auth/register` — user self-registration
+- `GET /api/products?search=<term>` — full-text product search
+- Admin product CRUD: `POST /api/products`, `PUT /api/products/:id`, `DELETE /api/products/:id`
+- Admin category management: `POST /api/categories`, `DELETE /api/categories/:id`
+- `GET /api/orders/:id` — fetch a single order by id
+- Order status transitions (e.g. pending → shipped → delivered)
 
 ## Folder Structure
 
