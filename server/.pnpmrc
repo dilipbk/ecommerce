@@ -1,0 +1,3 @@
+allow-unpublished-packages=true
+build-from-source=better-sqlite3
+package-import-method=hardlink
