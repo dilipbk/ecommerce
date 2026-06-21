@@ -1,8 +1,11 @@
+import { AppProviders } from "./app/providers/AppProviders";
+import { AppRoutes } from "./app/routes/AppRoutes";
+
 function App() {
   return (
-    <main className="app">
-      <h1>Hello ecommerce</h1>
-    </main>
+    <AppProviders>
+      <AppRoutes />
+    </AppProviders>
   );
 }
 
