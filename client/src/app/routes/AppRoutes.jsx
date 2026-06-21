@@ -2,6 +2,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { RootLayout } from "../layout/RootLayout";
 import { ProtectedRoute } from "./ProtectedRoute";
 import { ProductsPage } from "../../features/products/components/ProductsPage";
+import { ProductDetailPage } from "../../features/products/components/ProductDetailPage";
 import { LoginPage } from "../../features/auth/components/LoginPage";
 import { CartPage } from "../../features/cart/components/CartPage";
 
@@ -23,6 +24,7 @@ const router = createBrowserRouter([
     element: <RootLayout />,
     children: [
       { index: true, element: <ProductsPage /> },
+      { path: "products/:id", element: <ProductDetailPage /> },
       { path: "login", element: <LoginPage /> },
       // Routes that require authentication.
       {
