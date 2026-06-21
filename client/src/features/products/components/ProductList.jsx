@@ -3,8 +3,8 @@ import { ProductCard } from "./ProductCard";
 // Composition point: the products list injects the cart's add-to-cart action.
 import { AddToCartButton } from "../../cart/components/AddToCartButton";
 
-export function ProductList() {
-  const { data: products, isPending, isError, error } = useProducts();
+export function ProductList({ categoryId }) {
+  const { data: products, isPending, isError, error } = useProducts({ categoryId });
 
   if (isPending) {
     return <p className="text-gray-500">Loading products…</p>;
